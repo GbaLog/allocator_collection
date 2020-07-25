@@ -93,13 +93,17 @@ public:
       return 0;
 
     buf = std::addressof(block.data()[offset]);
-    return std::min(block.size() - offset, len);
+    if (block_id == _blocks.size() - 1 && _last_block_remain)
+      block_size -= _last_block_remain;
+    return std::min(block_size - offset, len);
   }
 
   void clear()
   {
     for (auto & it : _blocks)
       _allocator.deallocate(it);
+    _size = 0;
+    _last_block_remain = 0;
   }
 
   constexpr size_t size() const noexcept { return _size; }

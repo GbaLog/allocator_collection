@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(block_allocator_test CXX)
+project(allocator_collection_test CXX)
 
 enable_testing()
 find_package(GTest)
 
 add_executable(${PROJECT_NAME}
   test/static_chunk_allocator_test.cpp
+  test/dumb_chunk_allocator_test.cpp
   test/chunk_controller_test.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
