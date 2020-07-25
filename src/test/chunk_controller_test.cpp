@@ -7,7 +7,7 @@ class chunk_controller_test : public ::testing::Test
 public:
   virtual void SetUp() override
   {
-    _alloc = new ac::static_chunk_allocator{_buf, sizeof(_buf), 512};
+    _alloc = new ac::static_chunk_allocator{_buf, sizeof(_buf), 512ul};
   }
 
   virtual void TearDown() override
