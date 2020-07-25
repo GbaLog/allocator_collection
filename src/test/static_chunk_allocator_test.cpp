@@ -58,7 +58,7 @@ TEST(static_chunk_allocator_test, many_allocs_and_deallocs)
 
   ASSERT_EQ(64, allocator.size());
 
-  ac::static_chunk_allocator::chunk_t blocks[64];
+  ac::static_chunk_allocator::chunk_type blocks[64];
 
   for (auto & block : blocks)
   {
@@ -72,7 +72,7 @@ TEST(static_chunk_allocator_test, many_allocs_and_deallocs)
   for (auto & block : blocks)
   {
     allocator.deallocate(block);
-    block = ac::static_chunk_allocator::chunk_t{};
+    block = ac::static_chunk_allocator::chunk_type{};
   }
 
   EXPECT_EQ(0, allocator.in_use());
@@ -115,7 +115,7 @@ TEST(static_chunk_allocator_test, deallocate_wrong_pointer)
   EXPECT_EQ(1, allocator.in_use());
   EXPECT_EQ(0, allocator.remain());
 
-  wrong_block = ac::static_chunk_allocator::chunk_t{};
+  wrong_block = ac::static_chunk_allocator::chunk_type{};
 
   allocator.deallocate(wrong_block);
 

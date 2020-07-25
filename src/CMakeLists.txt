@@ -6,8 +6,8 @@ enable_testing()
 find_package(GTest)
 
 add_executable(${PROJECT_NAME}
-  test/block_allocator_test.cpp
-  test/block_entry_test.cpp)
+  test/static_chunk_allocator_test.cpp
+  test/chunk_controller_test.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
   CXX_STANDARD 20

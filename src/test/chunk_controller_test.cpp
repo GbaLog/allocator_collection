@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "static_chunk_allocator.hpp"
-#include "block_entry.hpp"
+#include "chunk_controller.hpp"
 
 class chunk_controller_test : public ::testing::Test
 {

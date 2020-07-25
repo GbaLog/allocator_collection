@@ -18,11 +18,11 @@ template<IsChunkAllocator Allocator>
 class chunk_controller
 {
 public:
-  using allocator_t = Allocator;
-  using chunk_t = typename Allocator::chunk_t;
+  using allocator_type = Allocator;
+  using chunk_type = typename Allocator::chunk_type;
 
   explicit
-    chunk_controller(allocator_t & allocator) :
+    chunk_controller(allocator_type & allocator) :
     _allocator(allocator),
     _size(0),
     _last_block_remain(0)
@@ -106,8 +106,8 @@ public:
   constexpr size_t remain() const noexcept { return _last_block_remain; }
 
 private:
-  allocator_t & _allocator;
-  std::vector<chunk_t> _blocks;
+  allocator_type & _allocator;
+  std::vector<chunk_type> _blocks;
   size_t _size;
   size_t _last_block_remain;
 

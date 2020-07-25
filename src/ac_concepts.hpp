@@ -9,8 +9,8 @@ namespace ac
 template<class T>
 concept IsChunkAllocator = requires(T & val)
 {
-  { val.allocate() } -> std::same_as<typename T::chunk_t>;
-  val.deallocate(typename T::chunk_t{});
+  { val.allocate() } -> std::same_as<typename T::chunk_type>;
+  val.deallocate(typename T::chunk_type{});
   { val.remain() } -> std::same_as<size_t>;
   { val.in_use() } -> std::same_as<size_t>;
   { val.size() } -> std::same_as<size_t>;

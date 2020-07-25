@@ -13,10 +13,11 @@ namespace ac
 class static_chunk_allocator
 {
 public:
-  using chunk_t = std::span<std::byte>;
+  using value_type = std::byte;
+  using chunk_type = std::span<value_type>;
 
 public:
-  static_chunk_allocator(std::byte * buf, size_t buf_len, size_t block_size) :
+  static_chunk_allocator(value_type * buf, size_t buf_len, size_t block_size) :
     _buf{buf, buf_len}, _block_size{block_size},
     _blocks_count{_buf.size_bytes() / _block_size}
   {
@@ -24,7 +25,7 @@ public:
     slice_to_blocks();
   }
 
-  chunk_t allocate()
+  chunk_type allocate()
   {
     if (_unused_block_ids.empty())
       return {};
@@ -34,7 +35,7 @@ public:
     return _buf.subspan(_block_size * block_id, _block_size);
   }
 
-  void deallocate(chunk_t chunk)
+  void deallocate(chunk_type chunk)
   {
     size_t chunk_place = chunk.data() - _buf.data();
     if (chunk_place % _block_size != 0)
@@ -51,7 +52,7 @@ public:
   size_t in_use() const noexcept { return size() - remain(); }
 
 private:
-  chunk_t _buf;
+  chunk_type _buf;
   const size_t _block_size;
   const size_t _blocks_count;
   std::deque<uint32_t> _unused_block_ids;
