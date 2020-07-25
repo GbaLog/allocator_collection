@@ -38,16 +38,16 @@ public:
   using chunk_type = std::span<std::byte>;
 
 public:
-  dumb_chunk_allocator(size_t block_size, size_t max_blocks) :
-    _block_size{block_size},
-    _max_blocks{max_blocks}
+  dumb_chunk_allocator(size_t chunk_size, size_t max_chunks) :
+    _chunk_size{chunk_size},
+    _max_chunks{max_chunks}
   {}
 
   chunk_type allocate()
   {
     if (_free_chunks.empty())
     {
-      if (size() >= _max_blocks)
+      if (size() >= _max_chunks)
         return chunk_type{};
       allocate_next();
     }
@@ -71,16 +71,16 @@ public:
 private:
   using internal_chunk = detail::dumb_chunk<value_type>;
 
-  const size_t _block_size;
-  const size_t _max_blocks;
+  const size_t _chunk_size;
+  const size_t _max_chunks;
   std::deque<chunk_type> _free_chunks;
   std::deque<internal_chunk> _all_chunks;
 
   void allocate_next()
   {
     internal_chunk new_chunk
-      { ._ptr = std::make_unique<value_type []>(_block_size) };
-    new_chunk._chunk = chunk_type{new_chunk._ptr.get(), _block_size};
+      { ._ptr = std::make_unique<value_type []>(_chunk_size) };
+    new_chunk._chunk = chunk_type{new_chunk._ptr.get(), _chunk_size};
 
     _all_chunks.push_back(std::move(new_chunk));
     _free_chunks.push_back(new_chunk._chunk);

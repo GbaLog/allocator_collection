@@ -5,7 +5,7 @@ TEST(dumb_chunk_allocator_test, single_allocate)
 {
   ac::dumb_chunk_allocator alloc{16, 10};
 
-  // It allocates blocks only if needed
+  // It allocates chunks only if needed
   ASSERT_EQ(0, alloc.size());
 
   auto chunk = alloc.allocate();
@@ -16,7 +16,7 @@ TEST(dumb_chunk_allocator_test, single_allocate)
   EXPECT_EQ(0, alloc.remain());
 }
 
-TEST(dumb_chunk_allocator_test, no_more_blocks_avaiable)
+TEST(dumb_chunk_allocator_test, no_more_chunks_avaiable)
 {
   ac::dumb_chunk_allocator alloc{16, 1};
 
@@ -28,7 +28,7 @@ TEST(dumb_chunk_allocator_test, no_more_blocks_avaiable)
   EXPECT_TRUE(chunk2.empty());
 }
 
-TEST(dumb_chunk_allocator_test, no_blocks_avaiable_at_all)
+TEST(dumb_chunk_allocator_test, no_chunks_avaiable_at_all)
 {
   ac::dumb_chunk_allocator alloc{16, 0};
   auto chunk = alloc.allocate();

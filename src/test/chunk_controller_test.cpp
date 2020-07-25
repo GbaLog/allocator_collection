@@ -43,7 +43,7 @@ TEST_F(chunk_controller_test, two_allocations)
   written = ctl.write(buf2, sizeof(buf2));
   EXPECT_EQ(479, written);
 
-  // Controller musn't allocate blocks until it's needed
+  // Controller musn't allocate chunks until it's needed
   EXPECT_EQ(1, _alloc->remain());
 }
 
@@ -60,19 +60,19 @@ TEST_F(chunk_controller_test, consequent_allocations)
   written = ctl.write(buf2, sizeof(buf2));
   EXPECT_EQ(479, written);
 
-  // Controller musn't allocate blocks until it's needed
+  // Controller musn't allocate chunks until it's needed
   EXPECT_EQ(1, _alloc->remain());
 
   written = ctl.write(buf, 1);
   EXPECT_EQ(1, written);
 
-  // Now it should have allocate remaining block
+  // Now it should have allocate remaining chunk
   EXPECT_EQ(0, _alloc->remain());
 
   std::byte buf3[512] {};
   written = ctl.write(buf3, sizeof(buf3));
-  // First byte of last allocated block is busy by 1 byte from last write
-  // And there's no available blocks, so it writes as much as it can
+  // First byte of last allocated chunk is busy by 1 byte from last write
+  // And there's no available chunks, so it writes as much as it can
   EXPECT_EQ(511, written);
 }
 
@@ -85,7 +85,7 @@ TEST_F(chunk_controller_test, read_from_begin_with_remaining_size)
   EXPECT_EQ(33, written);
 
   std::byte * to_read = nullptr;
-  // Must return 33, because only 33 bytes was written in first block
+  // Must return 33, because only 33 bytes was written in first chunk
   size_t read = ctl.read(0, to_read, 33);
   EXPECT_EQ(33, read);
 

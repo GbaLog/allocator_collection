@@ -8,8 +8,8 @@ TEST(static_chunk_allocator_test, single_allocation)
 
   ASSERT_EQ(2, allocator.size());
 
-  auto block = allocator.allocate();
-  EXPECT_EQ(512, block.size());
+  auto chunk = allocator.allocate();
+  EXPECT_EQ(512, chunk.size());
   EXPECT_EQ(1, allocator.in_use());
   EXPECT_EQ(1, allocator.remain());
 }
@@ -21,12 +21,12 @@ TEST(static_chunk_allocator_test, all_mem_exceed)
 
   ASSERT_EQ(1, allocator.size());
 
-  auto block1 = allocator.allocate();
-  auto block2 = allocator.allocate();
-  EXPECT_EQ(1024, block1.size());
+  auto chunk1 = allocator.allocate();
+  auto chunk2 = allocator.allocate();
+  EXPECT_EQ(1024, chunk1.size());
   EXPECT_EQ(1, allocator.in_use());
   EXPECT_EQ(0, allocator.remain());
-  EXPECT_TRUE(block2.empty());
+  EXPECT_TRUE(chunk2.empty());
 }
 
 TEST(static_chunk_allocator_test, with_deallocation)
@@ -36,17 +36,17 @@ TEST(static_chunk_allocator_test, with_deallocation)
 
   ASSERT_EQ(1, allocator.size());
 
-  auto block = allocator.allocate();
-  EXPECT_EQ(1024, block.size());
+  auto chunk = allocator.allocate();
+  EXPECT_EQ(1024, chunk.size());
   EXPECT_EQ(1, allocator.in_use());
   EXPECT_EQ(0, allocator.remain());
 
-  allocator.deallocate(block);
+  allocator.deallocate(chunk);
   EXPECT_EQ(0, allocator.in_use());
   EXPECT_EQ(1, allocator.remain());
 
-  block = allocator.allocate();
-  EXPECT_EQ(1024, block.size());
+  chunk = allocator.allocate();
+  EXPECT_EQ(1024, chunk.size());
   EXPECT_EQ(1, allocator.in_use());
   EXPECT_EQ(0, allocator.remain());
 }
@@ -58,30 +58,30 @@ TEST(static_chunk_allocator_test, many_allocs_and_deallocs)
 
   ASSERT_EQ(64, allocator.size());
 
-  ac::static_chunk_allocator::chunk_type blocks[64];
+  ac::static_chunk_allocator::chunk_type chunks[64];
 
-  for (auto & block : blocks)
+  for (auto & chunk : chunks)
   {
-    block = allocator.allocate();
-    EXPECT_EQ(16, block.size());
+    chunk = allocator.allocate();
+    EXPECT_EQ(16, chunk.size());
   }
 
   EXPECT_EQ(64, allocator.in_use());
   EXPECT_EQ(0, allocator.remain());
 
-  for (auto & block : blocks)
+  for (auto & chunk : chunks)
   {
-    allocator.deallocate(block);
-    block = ac::static_chunk_allocator::chunk_type{};
+    allocator.deallocate(chunk);
+    chunk = ac::static_chunk_allocator::chunk_type{};
   }
 
   EXPECT_EQ(0, allocator.in_use());
   EXPECT_EQ(64, allocator.remain());
 
-  for (auto & block : blocks)
+  for (auto & chunk : chunks)
   {
-    block = allocator.allocate();
-    EXPECT_EQ(16, block.size());
+    chunk = allocator.allocate();
+    EXPECT_EQ(16, chunk.size());
   }
 
   EXPECT_EQ(64, allocator.in_use());
@@ -95,35 +95,35 @@ TEST(static_chunk_allocator_test, deallocate_wrong_pointer)
 
   ASSERT_EQ(1, allocator.size());
 
-  auto block = allocator.allocate();
+  auto chunk = allocator.allocate();
 
-  EXPECT_EQ(1024, block.size());
+  EXPECT_EQ(1024, chunk.size());
   EXPECT_EQ(1, allocator.in_use());
   EXPECT_EQ(0, allocator.remain());
 
-  auto wrong_block = block.subspan(1);
+  auto wrong_chunk = chunk.subspan(1);
 
-  allocator.deallocate(wrong_block);
-
-  EXPECT_EQ(1, allocator.in_use());
-  EXPECT_EQ(0, allocator.remain());
-
-  wrong_block.subspan(10000);
-
-  allocator.deallocate(wrong_block);
+  allocator.deallocate(wrong_chunk);
 
   EXPECT_EQ(1, allocator.in_use());
   EXPECT_EQ(0, allocator.remain());
 
-  wrong_block = ac::static_chunk_allocator::chunk_type{};
+  wrong_chunk.subspan(10000);
 
-  allocator.deallocate(wrong_block);
+  allocator.deallocate(wrong_chunk);
+
+  EXPECT_EQ(1, allocator.in_use());
+  EXPECT_EQ(0, allocator.remain());
+
+  wrong_chunk = ac::static_chunk_allocator::chunk_type{};
+
+  allocator.deallocate(wrong_chunk);
 
   EXPECT_EQ(1, allocator.in_use());
   EXPECT_EQ(0, allocator.remain());
 
   // Check what we don't break anything
-  allocator.deallocate(block);
+  allocator.deallocate(chunk);
 
   EXPECT_EQ(0, allocator.in_use());
   EXPECT_EQ(1, allocator.remain());
