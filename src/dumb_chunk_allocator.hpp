@@ -29,7 +29,7 @@ constexpr bool operator ==(const dumb_chunk<T> & lhs,
   return lhs._chunk.data() == rhs.data();
 }
 
-}
+} // namespace detail
 
 class dumb_chunk_allocator
 {
@@ -65,8 +65,8 @@ public:
   }
 
   size_t size()   const noexcept { return _all_chunks.size(); }
-  size_t remain() const noexcept { return _free_chunks.size(); }
-  size_t in_use() const noexcept { return _all_chunks.size() - remain(); }
+  size_t remain() const noexcept { return _max_chunks - size() + _free_chunks.size(); }
+  size_t in_use() const noexcept { return size() - _free_chunks.size(); }
 
 private:
   using internal_chunk = detail::dumb_chunk<value_type>;

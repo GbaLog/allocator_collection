@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "static_chunk_allocator.hpp"
-#include "chunk_controller.hpp"
+#include "chunk_list_wrapper.hpp"
 
 class chunk_controller_test : public ::testing::Test
 {
@@ -23,7 +23,7 @@ protected:
 
 TEST_F(chunk_controller_test, overwrite)
 {
-  ac::chunk_controller ctl{*_alloc};
+  ac::chunk_list_wrapper ctl{*_alloc};
 
   std::byte buf[3333] {};
   size_t written = ctl.write(buf, sizeof(buf));
@@ -32,7 +32,7 @@ TEST_F(chunk_controller_test, overwrite)
 
 TEST_F(chunk_controller_test, two_allocations)
 {
-  ac::chunk_controller ctl{*_alloc};
+  ac::chunk_list_wrapper ctl{*_alloc};
 
   std::byte buf[33] {};
   std::byte buf2[479] {};
@@ -49,7 +49,7 @@ TEST_F(chunk_controller_test, two_allocations)
 
 TEST_F(chunk_controller_test, consequent_allocations)
 {
-  ac::chunk_controller ctl{*_alloc};
+  ac::chunk_list_wrapper ctl{*_alloc};
 
   std::byte buf[33] {};
   std::byte buf2[479] {};
@@ -78,7 +78,7 @@ TEST_F(chunk_controller_test, consequent_allocations)
 
 TEST_F(chunk_controller_test, read_from_begin_with_remaining_size)
 {
-  ac::chunk_controller ctl{*_alloc};
+  ac::chunk_list_wrapper ctl{*_alloc};
 
   std::byte buf[33] {};
   size_t written = ctl.write(buf, sizeof(buf));
@@ -100,7 +100,7 @@ TEST_F(chunk_controller_test, read_from_begin_with_remaining_size)
 
 TEST_F(chunk_controller_test, read_from_begin_without_remaining_size)
 {
-  ac::chunk_controller ctl{*_alloc};
+  ac::chunk_list_wrapper ctl{*_alloc};
 
   std::byte buf[1024] {};
   size_t written = ctl.write(buf, sizeof(buf));
@@ -115,7 +115,7 @@ TEST_F(chunk_controller_test, read_from_begin_without_remaining_size)
 
 TEST_F(chunk_controller_test, read_in_the_middle_of_chunk)
 {
-  ac::chunk_controller ctl{*_alloc};
+  ac::chunk_list_wrapper ctl{*_alloc};
 
   std::byte buf[1024] {};
   buf[256] = (std::byte)0x01;
@@ -140,7 +140,7 @@ TEST_F(chunk_controller_test, read_in_the_middle_of_chunk)
 
 TEST_F(chunk_controller_test, read_in_the_end_of_last_chunk)
 {
-  ac::chunk_controller ctl{*_alloc};
+  ac::chunk_list_wrapper ctl{*_alloc};
 
   std::byte buf[512] {};
   std::byte buf2[512] {};

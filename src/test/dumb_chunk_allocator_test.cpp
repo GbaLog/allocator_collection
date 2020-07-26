@@ -13,7 +13,7 @@ TEST(dumb_chunk_allocator_test, single_allocate)
 
   EXPECT_EQ(1, alloc.size());
   EXPECT_EQ(1, alloc.in_use());
-  EXPECT_EQ(0, alloc.remain());
+  EXPECT_EQ(9, alloc.remain());
 }
 
 TEST(dumb_chunk_allocator_test, no_more_chunks_avaiable)

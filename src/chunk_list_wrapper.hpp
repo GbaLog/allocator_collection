@@ -1,5 +1,5 @@
-#ifndef CHUNK_CONTROLLER_HPP
-#define CHUNK_CONTROLLER_HPP
+#ifndef CHUNK_LIST_WRAPPER_HPP
+#define CHUNK_LIST_WRAPPER_HPP
 
 #include "static_chunk_allocator.hpp"
 #include "ac_concepts.hpp"
@@ -15,25 +15,26 @@ namespace ac
 // It provides easy interface to write and read data to/from it.
 
 template<IsChunkAllocator Allocator>
-class chunk_controller
+class chunk_list_wrapper
 {
 public:
   using allocator_type = Allocator;
-  using chunk_type = typename Allocator::chunk_type;
+  using value_type = typename allocator_type::value_type;
+  using chunk_type = typename allocator_type::chunk_type;
 
   explicit
-    chunk_controller(allocator_type & allocator) :
+    chunk_list_wrapper(allocator_type & allocator) :
     _allocator(allocator),
     _size(0),
     _last_chunk_remain(0)
   {}
 
-  ~chunk_controller()
+  ~chunk_list_wrapper()
   {
     clear();
   }
 
-  size_t write(const std::byte * buf, size_t len)
+  size_t write(const value_type * buf, size_t len)
   {
     size_t orig_len = len;
 
@@ -52,10 +53,10 @@ public:
     return (orig_len - len);
   }
 
-  size_t read_copy(size_t offset, std::byte * buf, size_t len)
+  size_t read_copy(size_t offset, value_type * buf, size_t len)
   {
     const size_t orig_len = len;
-    std::byte * read_buf = nullptr;
+    value_type * read_buf = nullptr;
 
     // Read pointer first
     size_t rem = 0;
@@ -74,7 +75,7 @@ public:
     return orig_len - len;
   }
 
-  size_t read(size_t offset, std::byte *& buf, size_t len)
+  size_t read(size_t offset, value_type *& buf, size_t len)
   {
     if (offset >= size() || _chunks.empty())
       return 0;
@@ -115,7 +116,7 @@ private:
   size_t _size;
   size_t _last_chunk_remain;
 
-  void write_to_last(const std::byte *& buf, size_t & len)
+  void write_to_last(const value_type *& buf, size_t & len)
   {
     auto last = _chunks.back();
     auto write_size = std::min(_last_chunk_remain, len);
@@ -139,4 +140,4 @@ private:
 
 } // namespace ac
 
-#endif // CHUNK_CONTROLLER_HPP
+#endif // CHUNK_LIST_WRAPPER_HPP
