@@ -1,4 +1,4 @@
-//#ifdef __linux__
+#ifdef __linux__
 
 #ifndef SHARED_MEMORY_ALLOCATOR_HPP
 #define SHARED_MEMORY_ALLOCATOR_HPP
@@ -20,6 +20,12 @@ public:
     _flags{flags}
   {}
 
+  ~shared_memory_allocator()
+  {
+    if (attached())
+      detach();
+  }
+
   bool attach() noexcept
   {
     if (_segment_id == false)
@@ -39,6 +45,11 @@ public:
     if (_base_address == false)
       return false;
     int res = shmdt(*_base_address);
+    if (res == 0)
+    {
+      _segment_id.reset();
+      _base_address.reset();
+    }
     return res == 0;
   }
 
@@ -64,6 +75,11 @@ public:
       return true;
     }
     return false;
+  }
+
+  bool attached() const noexcept
+  {
+    return _base_address.has_value();
   }
 
   bool attach_or_allocate() noexcept
