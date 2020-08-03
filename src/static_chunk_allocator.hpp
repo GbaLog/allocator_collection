@@ -25,6 +25,7 @@ public:
     slice_to_chunks();
   }
 
+  [[nodiscard]]
   chunk_type allocate()
   {
     if (_unused_chunk_ids.empty())

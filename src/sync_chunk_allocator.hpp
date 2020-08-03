@@ -21,6 +21,7 @@ public:
     _allocator{std::forward<Args>(args)...}
   {}
 
+  [[nodiscard]]
   chunk_type allocate()
   {
     std::unique_lock lock(_mutex);

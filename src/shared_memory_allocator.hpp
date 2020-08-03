@@ -26,6 +26,7 @@ public:
       detach();
   }
 
+  [[nodiscard]]
   bool attach() noexcept
   {
     if (_segment_id == false)
@@ -40,6 +41,7 @@ public:
     return true;
   }
 
+  [[nodiscard]]
   bool detach() noexcept
   {
     if (_base_address == false)
@@ -53,6 +55,7 @@ public:
     return res == 0;
   }
 
+  [[nodiscard]]
   bool allocate() noexcept
   {
     // Try to allocate new block
@@ -77,16 +80,19 @@ public:
     return false;
   }
 
+  [[nodiscard]]
   bool attached() const noexcept
   {
     return _base_address.has_value();
   }
 
+  [[nodiscard]]
   bool attach_or_allocate() noexcept
   {
     return attach() || (allocate() && attach());
   }
 
+  [[nodiscard]]
   std::optional<void *> get_base_pointer() const noexcept
   {
     return _base_address;

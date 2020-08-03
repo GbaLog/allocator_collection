@@ -34,6 +34,7 @@ public:
     clear();
   }
 
+  [[nodiscard]]
   size_t write(const value_type * buf, size_t len)
   {
     size_t orig_len = len;
@@ -53,6 +54,7 @@ public:
     return (orig_len - len);
   }
 
+  [[nodiscard]]
   size_t read_copy(size_t offset, value_type * buf, size_t len)
   {
     const size_t orig_len = len;
@@ -75,6 +77,7 @@ public:
     return orig_len - len;
   }
 
+  [[nodiscard]]
   size_t read(size_t offset, value_type *& buf, size_t len)
   {
     if (offset >= size() || _chunks.empty())

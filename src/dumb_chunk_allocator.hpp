@@ -22,7 +22,9 @@ struct dumb_chunk
   chunk_type _chunk;
 };
 
+
 template<class T>
+[[nodiscard]]
 constexpr bool operator ==(const dumb_chunk<T> & lhs,
                            const typename dumb_chunk<T>::chunk_type & rhs)
 {
@@ -43,6 +45,7 @@ public:
     _max_chunks{max_chunks}
   {}
 
+  [[nodiscard]]
   chunk_type allocate()
   {
     if (_free_chunks.empty())
